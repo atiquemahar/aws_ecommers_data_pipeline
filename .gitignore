@@ -1,37 +1,111 @@
-# Local .terraform directories
-.terraform/
-
-# .tfstate files
+# Terraform
 *.tfstate
 *.tfstate.*
-
-# Crash log files
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate.backup
+.terraform.tfstate.lock.info
 crash.log
 crash.*.log
 
-# Exclude all .tfvars files, which are likely to contain sensitive data, such as
-# password, private keys, and other secrets. These should not be part of version 
-# control as they are data points which are potentially sensitive and subject 
-# to change depending on the environment.
-*.tfvars
-*.tfvars.json
+# AWS
+.aws/
+aws-credentials
+*.pem
+*.key
 
-# Ignore override files as they are usually used to override resources locally and so
-# are not checked in
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Ignore transient lock info files created by terraform apply
-.terraform.tfstate.lock.info
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# Include override files you do wish to add to version control using negated pattern
-# !example_override.tf
+# IDE
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+*~
 
-# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
-# example: *tfplan*
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Secrets and sensitive data
+secrets/
+.env
+.env.local
+.env.production
+*.secret
+*.key
+*.pem
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Glue specific
+glue/scripts/__pycache__/
+glue/scripts/*.pyc
+glue/scripts/.pytest_cache/
+
+# S3 uploads (if any local copies)
+uploads/
+downloads/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/ 
