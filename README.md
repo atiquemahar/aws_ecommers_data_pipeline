@@ -14,7 +14,6 @@ RDS MySQL → AWS Glue ETL → S3 (Parquet) → Athena Queries
 - **S3**: Data lake storage (raw and processed data, can be created via AWS Console or Terraform)
 - **Athena**: Serverless query service for analytics
 - **IAM**: Secure access management
-- **Secrets Manager**: Secure credential storage
 
 ## 📊 Data Model
 
@@ -73,14 +72,35 @@ ORDER BY d.year, d.month;
 - AWS CLI configured
 - Terraform installed (optional for IAM/Glue)
 - VPC with subnets configured
-- **RDS and S3 can be created via AWS Console or Terraform**
+- **RDS and S3 can be created via AWS Console
+
+  
+- ## 🔧 Configuration
+
+### Using Manually Created Resources
+- If you create RDS and S3 via the AWS Console, update your Glue job and Athena configuration to use the correct endpoints, bucket names, and credentials.
+- Ensure your RDS security group allows inbound MySQL (3306) from the Glue security group.
+- Use Terraform for IAM roles for glue jobs, and Glue jobs.
+
+### Required Variables (using Terraform for glue)
+```hcl
+# Network
+vpc_id = "vpc-your-vpc-id"
+subnet_ids = ["subnet-id-1", "subnet-id-2"]
+
+# Database
+rds_master_password = "your-secure-password"
+
+# Security
+allowed_cidr_blocks = ["your-ip-range"]
+```
 
 ### Deployment
 
 1. **Provision RDS and S3**:
-   - You can create your RDS MySQL instance and S3 buckets via the AWS Console.
+   - Create RDS MySQL instance and S3 buckets via the AWS Console.
    - Note the RDS endpoint, database name, username, and password, as well as S3 bucket names.
-   - If you use Terraform for these, follow the original steps below.
+   - Use Terraform for AWS Glue, follow the original steps below.
 
 2. **Clone and configure**:
 ```bash
@@ -88,20 +108,23 @@ git clone <repository>
 cd ecommerce_etl_pipeline/terraform
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
-# If you created RDS/S3 manually, update variables to reference those resources
+# RDS/S3 created manually, update variables to reference those resources
 ```
 
 3. **Deploy infrastructure (IAM, Glue, etc.)**:
 ```bash
 terraform init
-terraform plan -out=tfplan
-terraform apply tfplan
+terraform plan 
+terraform apply 
 ```
 
 4. **Upload ETL script**:
    - If you created the Glue artifacts S3 bucket manually, upload the script there:
 ```bash
-aws s3 cp ../glue/scripts/ecommerce_etl.py s3://<your-glue-artifacts-bucket>/scripts/
+aws s3 cp ../glue/scripts/extract_data.py s3://<your-glue-artifacts-bucket>/scripts/
+```
+```bash
+aws s3 cp ../glue/scripts/transform_data.py s3://<your-glue-artifacts-bucket>/scripts/
 ```
    - If using Terraform, you can use the output variable as before.
 
@@ -129,34 +152,14 @@ ecommerce_etl_pipeline/
 │   ├── 📄 terraform.tfvars
 └── 🔧 glue/
     └── 📁 scripts/
-        └── 📄 ecommerce_etl.py
-```
-
-## 🔧 Configuration
-
-### Using Manually Created Resources
-- If you create RDS and S3 via the AWS Console, update your Glue job and Athena configuration to use the correct endpoints, bucket names, and credentials.
-- Ensure your RDS security group allows inbound MySQL (3306) from the Glue security group.
-- You can still use Terraform for IAM roles, Glue jobs, and other resources.
-
-### Required Variables (if using Terraform)
-```hcl
-# Network
-vpc_id = "vpc-your-vpc-id"
-subnet_ids = ["subnet-id-1", "subnet-id-2"]
-
-# Database
-rds_master_password = "your-secure-password"
-
-# Security
-allowed_cidr_blocks = ["your-ip-range/32"]
+        └── 📄 extarct_data.py
+        └── 📄 transform_data.py
 ```
 
 ## 🔒 Security
 
 - **Encryption**: All data encrypted at rest and in transit
 - **IAM**: Least privilege access policies
-- **Secrets Manager**: Secure credential storage
 - **VPC**: Network isolation for RDS
 - **S3**: Bucket policies and versioning
 
